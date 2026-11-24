@@ -1,0 +1,1751 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Synapse Observant • Neural Perplexity Laboratory</title>
+
+  <!-- Google Fonts: Space Grotesk (Neo-Brutalist Display) + Plus Jakarta Sans + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+
+  <style>
+    /* ==========================================================================
+       CYBER-OBSERVATORY THEME SYSTEM
+       Deep obsidian-cyan palette, glowing glass cards, neon accents, dual theme
+       ========================================================================== */
+    :root {
+      --font-heading: 'Space Grotesk', system-ui, sans-serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      /* Dark Observatory Palette (Default) */
+      --bg-canvas: #060913;
+      --bg-canvas-subtle: #0B1021;
+      --bg-card: rgba(13, 20, 38, 0.75);
+      --bg-card-subtle: rgba(18, 27, 52, 0.85);
+      --bg-card-hover: rgba(22, 34, 65, 0.95);
+      --bg-elevated: #111A33;
+      --bg-input: rgba(6, 11, 24, 0.9);
+
+      --border-subtle: rgba(0, 240, 255, 0.12);
+      --border-medium: rgba(0, 240, 255, 0.28);
+      --border-focus: #00F0FF;
+
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --text-inverted: #060913;
+
+      /* Cyber Glow Accents */
+      --cyan-glow: #00F0FF;
+      --cyan-subtle: rgba(0, 240, 255, 0.15);
+      --violet-glow: #A855F7;
+      --violet-subtle: rgba(168, 85, 247, 0.15);
+      --emerald-glow: #10B981;
+      --emerald-subtle: rgba(16, 185, 129, 0.15);
+      --amber-glow: #F59E0B;
+      --amber-subtle: rgba(245, 158, 11, 0.15);
+      --rose-glow: #F43F5E;
+
+      --shadow-card: 0 16px 40px -8px rgba(0, 0, 0, 0.6), 0 0 24px rgba(0, 240, 255, 0.05);
+      --shadow-hover: 0 24px 50px -10px rgba(0, 0, 0, 0.75), 0 0 35px rgba(0, 240, 255, 0.15);
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-pill: 9999px;
+    }
+
+    /* Light Lab Mode */
+    [data-theme="light"] {
+      --bg-canvas: #F0F4F8;
+      --bg-canvas-subtle: #E2E8F0;
+      --bg-card: rgba(255, 255, 255, 0.92);
+      --bg-card-subtle: #F8FAFC;
+      --bg-card-hover: #FFFFFF;
+      --bg-elevated: #FFFFFF;
+      --bg-input: #FFFFFF;
+
+      --border-subtle: rgba(15, 23, 42, 0.1);
+      --border-medium: rgba(14, 165, 233, 0.35);
+      --border-focus: #0284C7;
+
+      --text-primary: #0F172A;
+      --text-secondary: #475569;
+      --text-muted: #64748B;
+      --text-inverted: #FFFFFF;
+
+      --cyan-glow: #0284C7;
+      --cyan-subtle: rgba(2, 132, 199, 0.1);
+      --violet-glow: #7C3AED;
+      --violet-subtle: rgba(124, 58, 237, 0.1);
+      --emerald-glow: #059669;
+      --emerald-subtle: rgba(5, 150, 105, 0.1);
+      --amber-glow: #D97706;
+      --amber-subtle: rgba(217, 119, 6, 0.1);
+      --rose-glow: #E11D48;
+
+      --shadow-card: 0 12px 30px -4px rgba(15, 23, 42, 0.08);
+      --shadow-hover: 0 20px 40px -6px rgba(15, 23, 42, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+      position: relative;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Ambient Neural Grid & Glows */
+    .ambient-grid {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 240, 255, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 90% 15%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.06) 0%, transparent 45%),
+        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 24px 20px 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ==========================================================================
+       NAVBAR
+       ========================================================================== */
+    .navbar-wrap {
+      margin-bottom: 40px;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-pill);
+      padding: 10px 22px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--cyan-glow), var(--violet-glow));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #060913;
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+    }
+
+    .brand-text {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-text .gradient-text {
+      background: linear-gradient(135deg, var(--cyan-glow) 0%, var(--violet-glow) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-badge {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--cyan-subtle);
+      border: 1px solid var(--border-medium);
+      color: var(--cyan-glow);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover {
+      color: var(--cyan-glow);
+    }
+
+    .theme-toggle-btn {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .theme-toggle-btn:hover {
+      border-color: var(--cyan-glow);
+      color: var(--cyan-glow);
+      transform: rotate(15deg);
+    }
+
+    @media (max-width: 680px) {
+      .nav-links { display: none; }
+    }
+
+    /* ==========================================================================
+       HERO SECTION
+       ========================================================================== */
+    .hero-section {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .hero-tagline-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: var(--cyan-subtle);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-pill);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--cyan-glow);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .hero-title {
+      font-family: var(--font-heading);
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 18px;
+    }
+
+    .hero-title .gradient-text {
+      background: linear-gradient(135deg, var(--cyan-glow) 20%, var(--violet-glow) 70%, #F43F5E 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      max-width: 680px;
+      margin: 0 auto 36px;
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      font-weight: 400;
+    }
+
+    /* Floating Feature Cards */
+    .hero-pins {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
+      .hero-pins { grid-template-columns: 1fr; }
+    }
+
+    .pin-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-align: left;
+      transition: all 0.25s;
+    }
+
+    .pin-card:hover {
+      border-color: var(--border-medium);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .pin-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .pin-title {
+      font-family: var(--font-heading);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .pin-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       CARDS & SECTION CONTAINERS
+       ========================================================================== */
+    .section-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      margin-bottom: 36px;
+      box-shadow: var(--shadow-card);
+      transition: border-color 0.3s, box-shadow 0.3s;
+      position: relative;
+    }
+
+    .section-card:hover {
+      border-color: var(--border-medium);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .card-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      gap: 16px;
+    }
+
+    .card-title-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .step-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--cyan-subtle);
+      border: 1px solid var(--border-medium);
+      color: var(--cyan-glow);
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text-primary);
+    }
+
+    .card-subtitle {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .sim-tag-sticker {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: var(--amber-subtle);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: var(--amber-glow);
+      border-radius: var(--radius-pill);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .explain-banner {
+      background: var(--bg-card-subtle);
+      border-left: 3px solid var(--cyan-glow);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 12px 18px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .explain-banner code {
+      font-family: var(--font-mono);
+      background: rgba(0, 0, 0, 0.25);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--cyan-glow);
+    }
+
+    /* ==========================================================================
+       SECTION 1: INPUT LAB
+       ========================================================================== */
+    .input-wrapper {
+      margin-bottom: 18px;
+    }
+
+    .fancy-input {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      font-family: var(--font-sans);
+      font-size: 1.15rem;
+      color: var(--text-primary);
+      outline: none;
+      transition: all 0.25s;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+
+    .fancy-input:focus {
+      border-color: var(--cyan-glow);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.2), inset 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+
+    .prompt-chips-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .chips-container, .presets-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .sample-chip, .preset-btn {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-pill);
+      padding: 8px 16px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      font-family: var(--font-sans);
+    }
+
+    .sample-chip:hover, .preset-btn:hover {
+      border-color: var(--border-medium);
+      color: var(--cyan-glow);
+      background: var(--cyan-subtle);
+      transform: translateY(-1px);
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 20px;
+      padding-top: 10px;
+    }
+
+    .btn-cta {
+      background: linear-gradient(135deg, #00C6FF 0%, #0072FF 50%, #8B5CF6 100%);
+      color: #FFFFFF;
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 0.02em;
+      padding: 14px 30px;
+      border: none;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0, 198, 255, 0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s;
+    }
+
+    .btn-cta:hover:not(:disabled) {
+      box-shadow: 0 8px 30px rgba(0, 198, 255, 0.6);
+      transform: translateY(-2px);
+      filter: brightness(1.1);
+    }
+
+    .btn-cta:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .status-container {
+      flex: 1;
+      min-width: 260px;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+    }
+
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .status-indicator.ready {
+      background: var(--emerald-glow);
+      box-shadow: 0 0 10px var(--emerald-glow);
+    }
+
+    .status-indicator.loading {
+      background: var(--cyan-glow);
+      box-shadow: 0 0 10px var(--cyan-glow);
+      animation: pulseIndicator 1.5s infinite;
+    }
+
+    .status-indicator.error {
+      background: var(--rose-glow);
+      box-shadow: 0 0 10px var(--rose-glow);
+    }
+
+    @keyframes pulseIndicator {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(0.8); }
+    }
+
+    .progress-bar-wrap {
+      display: none;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--cyan-glow), var(--violet-glow));
+      transition: width 0.3s;
+    }
+
+    /* ==========================================================================
+       SECTION 2: TOKEN ANALYSIS & METRIC BANNERS
+       ========================================================================== */
+    .sentence-ribbon {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      padding: 12px 18px;
+      background: var(--bg-card-subtle);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .ribbon-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-right: 4px;
+    }
+
+    .token-pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 600;
+      border: 1px solid transparent;
+    }
+
+    .pill-high {
+      background: var(--emerald-subtle);
+      border-color: rgba(16, 185, 129, 0.3);
+      color: var(--emerald-glow);
+    }
+
+    .pill-medium {
+      background: var(--cyan-subtle);
+      border-color: rgba(0, 240, 255, 0.3);
+      color: var(--cyan-glow);
+    }
+
+    .pill-low {
+      background: rgba(244, 63, 94, 0.15);
+      border-color: rgba(244, 63, 94, 0.3);
+      color: var(--rose-glow);
+    }
+
+    /* Metric Hero Banner */
+    .metric-hero-banner {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 800px) {
+      .metric-hero-banner { grid-template-columns: 1fr; }
+    }
+
+    .metric-pin {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-pin:first-child {
+      border-color: var(--border-medium);
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.08) 0%, rgba(168, 85, 247, 0.08) 100%);
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.1);
+    }
+
+    .metric-pin-top {
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .metric-value-huge {
+      font-family: var(--font-heading);
+      font-size: 2.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--cyan-glow) 0%, var(--violet-glow) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 4px;
+    }
+
+    .metric-pin-hint {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+
+    /* Data Table */
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      background: var(--bg-card-subtle);
+      margin-bottom: 28px;
+    }
+
+    .chic-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    .chic-table th {
+      padding: 12px 18px;
+      background: rgba(0, 0, 0, 0.2);
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .chic-table td {
+      padding: 12px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .tok-tag {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--cyan-glow);
+      background: var(--cyan-subtle);
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      display: inline-block;
+    }
+
+    .mini-meter {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+      width: 100%;
+      min-width: 80px;
+    }
+
+    .mini-meter-fill {
+      height: 100%;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(90deg, var(--cyan-glow), var(--violet-glow));
+    }
+
+    /* Formula Breakdown Card */
+    .formula-breakdown-card {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 24px;
+    }
+
+    .steps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .step-number-pill {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      background: var(--cyan-subtle);
+      border: 1px solid var(--border-medium);
+      color: var(--cyan-glow);
+      border-radius: var(--radius-pill);
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .step-content {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .step-content code {
+      font-family: var(--font-mono);
+      background: rgba(0, 0, 0, 0.25);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--text-primary);
+    }
+
+    .step-result-highlight {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--cyan-glow);
+      margin-left: 4px;
+    }
+
+    .insight-callout {
+      margin-top: 20px;
+      padding: 14px 18px;
+      background: var(--cyan-subtle);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-medium);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+    }
+
+    /* ==========================================================================
+       SECTION 3: NEXT TOKEN PREDICTIONS
+       ========================================================================== */
+    .predictions-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .pred-row {
+      display: grid;
+      grid-template-columns: 45px 140px 1fr 85px;
+      align-items: center;
+      gap: 16px;
+      padding: 10px 18px;
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      transition: all 0.25s;
+    }
+
+    .pred-row:hover {
+      border-color: var(--border-medium);
+      background: var(--bg-card-hover);
+    }
+
+    .pred-row.top-rank {
+      border-color: var(--cyan-glow);
+      background: var(--cyan-subtle);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+    }
+
+    .pred-rank {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .pred-token {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pred-bar-track {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+    }
+
+    .pred-bar-fill {
+      height: 100%;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(90deg, var(--cyan-glow), var(--violet-glow));
+      transition: width 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .pred-percent {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-align: right;
+    }
+
+    /* ==========================================================================
+       SECTION 4: SIMULATOR
+       ========================================================================== */
+    .sim-rows-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .sim-row-item {
+      display: grid;
+      grid-template-columns: 160px 1fr 100px;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 18px;
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+    }
+
+    @media (max-width: 680px) {
+      .sim-row-item {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+    }
+
+    .sim-token-input {
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .sim-token-input:focus {
+      border-color: var(--cyan-glow);
+    }
+
+    .sim-prob-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sim-slider {
+      flex: 1;
+      accent-color: var(--cyan-glow);
+      cursor: pointer;
+    }
+
+    .sim-number-input {
+      width: 75px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      text-align: right;
+      outline: none;
+    }
+
+    .btn-remove-row {
+      background: transparent;
+      border: 1px solid rgba(244, 63, 94, 0.3);
+      color: var(--rose-glow);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-remove-row:hover {
+      background: rgba(244, 63, 94, 0.15);
+      border-color: var(--rose-glow);
+    }
+
+    .sim-actions-bar {
+      margin-bottom: 24px;
+    }
+
+    .btn-add-token {
+      background: var(--cyan-subtle);
+      border: 1px dashed var(--border-medium);
+      color: var(--cyan-glow);
+      padding: 10px 20px;
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-add-token:hover {
+      background: rgba(0, 240, 255, 0.22);
+      border-color: var(--cyan-glow);
+      transform: translateY(-1px);
+    }
+
+    /* ==========================================================================
+       FOOTER
+       ========================================================================== */
+    .footer {
+      text-align: center;
+      padding-top: 40px;
+      border-top: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    .footer-heart {
+      color: var(--rose-glow);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Grid Background -->
+  <div class="ambient-grid"></div>
+
+  <div class="container">
+
+    <!-- ========================================================================
+         1. NAVBAR WITH THEME TOGGLE
+         ======================================================================== -->
+    <header class="navbar-wrap">
+      <nav class="navbar" aria-label="Main Navigation">
+        <a href="#" class="brand">
+          <div class="brand-icon">
+            <i data-lucide="cpu" style="width: 20px; height: 20px;"></i>
+          </div>
+          <div class="brand-text">
+            <span>synapse<span class="gradient-text">.observatory</span></span>
+          </div>
+          <span class="brand-badge">DistilGPT-2</span>
+        </a>
+
+        <div class="nav-links">
+          <a href="#sentence-section" class="nav-link">
+            <i data-lucide="activity" style="width: 14px; height: 14px;"></i>
+            <span>Analyzer</span>
+          </a>
+          <a href="#simulator-section" class="nav-link">
+            <i data-lucide="sliders" style="width: 14px; height: 14px;"></i>
+            <span>Simulator</span>
+          </a>
+          <a href="#formula-guide" class="nav-link">
+            <i data-lucide="book-open" style="width: 14px; height: 14px;"></i>
+            <span>Theory</span>
+          </a>
+        </div>
+
+        <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle Theme" title="Toggle Theme">
+          <i id="themeIcon" data-lucide="sun" style="width: 18px; height: 18px;"></i>
+        </button>
+      </nav>
+    </header>
+
+    <!-- ========================================================================
+         2. HERO SECTION
+         ======================================================================== -->
+    <section class="hero-section">
+      <div class="hero-tagline-wrap">
+        <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i>
+        <span>Neural Language Dynamics</span>
+      </div>
+
+      <h1 class="hero-title">
+        How <em>surprised</em> is your<br>
+        <span class="gradient-text">language model?</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        Perplexity is the gold standard for measuring an LLM's uncertainty. Watch real neural probabilities from <strong>DistilGPT-2</strong> transform step-by-step into a single intuitive metric.
+      </p>
+
+      <!-- Floating Stat Cards -->
+      <div class="hero-pins">
+        <div class="pin-card">
+          <div class="pin-icon">📉</div>
+          <div>
+            <div class="pin-title">Lower = Less Surprised</div>
+            <div class="pin-desc">Predictable text yields smaller perplexity</div>
+          </div>
+        </div>
+
+        <div class="pin-card">
+          <div class="pin-icon">🎲</div>
+          <div>
+            <div class="pin-title">Geometric Mean of 1/P</div>
+            <div class="pin-desc">Equivalent to rolling an N-sided die</div>
+          </div>
+        </div>
+
+        <div class="pin-card">
+          <div class="pin-icon">⚡</div>
+          <div>
+            <div class="pin-title">100% Client-Side ONNX</div>
+            <div class="pin-desc">DistilGPT-2 running locally in your browser</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         3. SECTION 1: SENTENCE INPUT
+         ======================================================================== -->
+    <section class="section-card" id="sentence-section">
+      <div class="card-header-flex">
+        <div class="card-title-group">
+          <div class="step-badge">1</div>
+          <div>
+            <h2 class="card-title">Feed the Model a Sentence</h2>
+            <p class="card-subtitle">Real-time inference using Transformers.js & ONNX WebAssembly</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="explain-banner">
+        <i data-lucide="info" style="width: 20px; height: 20px; flex-shrink: 0; color: var(--cyan-glow);"></i>
+        <div>
+          <strong>What is happening under the hood?</strong> The model reads your sentence token by token. For every token, it calculates: <em>"How probable did I think this token was, given everything written before it?"</em>
+        </div>
+      </div>
+
+      <div class="input-wrapper">
+        <input type="text" id="sentence" class="fancy-input" value="I love Python" placeholder="Type or click a prompt below…" autocomplete="off">
+      </div>
+
+      <div class="prompt-chips-label">
+        <i data-lucide="compass" style="width: 14px; height: 14px;"></i>
+        <span>Try these prompt samples</span>
+      </div>
+
+      <div class="chips-container">
+        <button type="button" class="sample-chip sample"><span>🐍</span> I love Python</button>
+        <button type="button" class="sample-chip sample"><span>🤪</span> Python love I</button>
+        <button type="button" class="sample-chip sample"><span>🥐</span> The capital of France is Paris</button>
+        <button type="button" class="sample-chip sample"><span>🦊</span> The quick brown fox jumps over the lazy dog</button>
+        <button type="button" class="sample-chip sample"><span>🤖</span> AI will change how we create</button>
+      </div>
+
+      <div class="action-row">
+        <button class="btn-cta" id="runBtn">
+          <i data-lucide="play" style="width: 18px; height: 18px; fill: currentColor;"></i>
+          <span>Calculate Perplexity</span>
+        </button>
+
+        <div class="status-container">
+          <div class="status-badge" id="statusBadge">
+            <span class="status-indicator" id="statusIndicator"></span>
+            <span id="status">Ready to calculate. (First run downloads weights once)</span>
+          </div>
+          <div class="progress-bar-wrap" id="progressBarWrap">
+            <div class="progress-bar-fill" id="progressBarFill"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         4. SECTION 2: TOKEN PROBABILITIES & PERPLEXITY
+         ======================================================================== -->
+    <section class="section-card" id="realCard" style="display:none;">
+      <div class="card-header-flex">
+        <div class="card-title-group">
+          <div class="step-badge">2</div>
+          <div>
+            <h2 class="card-title">Token Probabilities &amp; Perplexity</h2>
+            <p class="card-subtitle">Per-token likelihood and geometric accumulation</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="explain-banner">
+        <i data-lucide="calculator" style="width: 20px; height: 20px; flex-shrink: 0; color: var(--cyan-glow);"></i>
+        <div>
+          <strong>The Golden Formula:</strong>
+          <code>Perplexity = (1/P₁ × 1/P₂ × … × 1/Pₙ)<sup>1/N</sup></code>. A tiny probability produces a massive <code>1/P</code> penalty, which spikes perplexity up. Lower perplexity = the sentence flowed naturally to DistilGPT-2!
+        </div>
+      </div>
+
+      <div id="realOut"></div>
+    </section>
+
+    <!-- ========================================================================
+         5. SECTION 3: NEXT TOKEN PREDICTIONS
+         ======================================================================== -->
+    <section class="section-card" id="nextCard" style="display:none;">
+      <div class="card-header-flex">
+        <div class="card-title-group">
+          <div class="step-badge">3</div>
+          <div>
+            <h2 class="card-title">What comes next?</h2>
+            <p class="card-subtitle">Top 8 continuation tokens predicted by DistilGPT-2</p>
+          </div>
+        </div>
+        <span class="sim-tag-sticker">
+          <i data-lucide="sparkles" style="width: 12px; height: 12px;"></i>
+          Next Token Distribution
+        </span>
+      </div>
+
+      <div class="explain-banner">
+        <i data-lucide="help-circle" style="width: 20px; height: 20px; flex-shrink: 0; color: var(--cyan-glow);"></i>
+        <div>
+          The top 8 tokens the neural model considers most probable to appear right after your sentence.
+        </div>
+      </div>
+
+      <div id="nextOut" class="predictions-grid"></div>
+    </section>
+
+    <!-- ========================================================================
+         6. SECTION 4: MANUAL SIMULATOR
+         ======================================================================== -->
+    <section class="section-card" id="simulator-section">
+      <div class="card-header-flex">
+        <div class="card-title-group">
+          <div class="step-badge" style="background: var(--amber-subtle); color: var(--amber-glow); border-color: rgba(245, 158, 11, 0.4);">4</div>
+          <div>
+            <h2 class="card-title">Interactive Perplexity Simulator</h2>
+            <p class="card-subtitle">Explore hypothetical probabilities without loading the ML model</p>
+          </div>
+        </div>
+        <span class="sim-tag-sticker">
+          <i data-lucide="sliders" style="width: 12px; height: 12px;"></i>
+          Manual Sandbox
+        </span>
+      </div>
+
+      <div class="explain-banner">
+        <i data-lucide="lightbulb" style="width: 20px; height: 20px; flex-shrink: 0; color: var(--amber-glow);"></i>
+        <div>
+          <strong>Hands-on Intuition:</strong> Adjust probabilities below and watch how perplexity shifts in real time. Try clicking <strong>"All 1/8"</strong>: if each token has probability <code>0.125</code>, perplexity is exactly <strong>8.0</strong>!
+        </div>
+      </div>
+
+      <div class="prompt-chips-label">
+        <i data-lucide="bookmark" style="width: 14px; height: 14px;"></i>
+        <span>Load interactive preset</span>
+      </div>
+
+      <div class="presets-wrap">
+        <button class="preset-btn preset" data-p="I:0.5,love:0.8,Python:0.2">
+          <span>🐍</span> I love Python (0.5, 0.8, 0.2)
+        </button>
+        <button class="preset-btn preset" data-p="t1:0.125,t2:0.125,t3:0.125,t4:0.125,t5:0.125,t6:0.125,t7:0.125,t8:0.125">
+          <span>🎲</span> All 1/8 (Uniform 8.0)
+        </button>
+        <button class="preset-btn preset" data-p="The:0.9,cat:0.9,sat:0.9,quietly:0.01">
+          <span>⚡</span> One surprising word (0.01)
+        </button>
+        <button class="preset-btn preset" data-p="Artificial:0.85,intelligence:0.92,is:0.88,magic:0.4">
+          <span>✨</span> AI is Magic
+        </button>
+      </div>
+
+      <div id="simRows" class="sim-rows-container"></div>
+
+      <div class="sim-actions-bar">
+        <button id="addRow" class="btn-add-token">
+          <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+          <span>Add Token</span>
+        </button>
+      </div>
+
+      <div id="simOut"></div>
+    </section>
+
+    <!-- ========================================================================
+         7. FOOTER
+         ======================================================================== -->
+    <footer class="footer" id="formula-guide">
+      <p>
+        Crafted with <span class="footer-heart">♥</span> for neural architecture exploration.
+      </p>
+      <p style="margin-top: 6px; font-size: 0.8125rem;">
+        Powered by DistilGPT-2 via Hugging Face Transformers.js • 100% Client-Side WebAssembly
+      </p>
+    </footer>
+
+  </div>
+
+  <!-- ==========================================================================
+       JAVASCRIPT MODULE (Transformers.js & Application Logic)
+       ========================================================================== -->
+  <script type="module">
+    import { AutoTokenizer, AutoModelForCausalLM, Tensor, env } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3";
+
+    // Skip local filesystem checks so browser fetches directly from Hugging Face Hub
+    if (env) {
+      env.allowLocalModels = false;
+      env.useBrowserCache = true;
+    }
+
+    // Lucide Icons Helper
+    function renderIcons() {
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+    renderIcons();
+
+    // Theme Toggle System (Dark Observatory vs Light Lab)
+    const themeToggleBtn = document.getElementById("themeToggleBtn");
+    const themeIcon = document.getElementById("themeIcon");
+
+    function setTheme(theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      localStorage.setItem("synapse_theme", theme);
+      if (theme === "light") {
+        themeIcon.setAttribute("data-lucide", "moon");
+      } else {
+        themeIcon.setAttribute("data-lucide", "sun");
+      }
+      renderIcons();
+    }
+
+    const savedTheme = localStorage.getItem("synapse_theme") || "dark";
+    setTheme(savedTheme);
+
+    themeToggleBtn.addEventListener("click", () => {
+      const current = document.documentElement.getAttribute("data-theme") || "dark";
+      setTheme(current === "dark" ? "light" : "dark");
+    });
+
+    // Model Constants & References
+    const MODEL_ID = "Xenova/distilgpt2";
+    const START_TOKEN_ID = 50256; // GPT-2 <|endoftext|> start marker
+    let tokenizer = null;
+    let model = null;
+
+    const $ = (id) => document.getElementById(id);
+
+    // Number & Token Formatters
+    function fmt(x) {
+      if (x === 0) return "0";
+      if (x >= 0.001 && x < 1e6) return Number(x.toPrecision(4)).toString();
+      return x.toExponential(2);
+    }
+
+    function showToken(t) {
+      if (!t) return "";
+      return t.replace(/ /g, "␣").replace(/Ġ/g, "␣").replace(/\n/g, "↵");
+    }
+
+    function getProbBadgeClass(p) {
+      if (p >= 0.35) return "pill-high";
+      if (p >= 0.08) return "pill-medium";
+      return "pill-low";
+    }
+
+    // The Perplexity Explanation Generator
+    function explain(rows) {
+      const N = rows.length;
+      let sumLog = 0;
+
+      // Ribbon of tokens
+      let ribbonHtml = `<div class="sentence-ribbon"><span class="ribbon-label">Tokens:</span>`;
+      rows.forEach(r => {
+        const badgeClass = getProbBadgeClass(r.p);
+        ribbonHtml += `<span class="token-pill-badge ${badgeClass}">${showToken(r.token)} <small style="opacity:0.8;">${(r.p * 100).toFixed(1)}%</small></span>`;
+      });
+      ribbonHtml += `</div>`;
+
+      // Data Table
+      let tableHtml = `
+        <div class="table-responsive">
+          <table class="chic-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">#</th>
+                <th>Token</th>
+                <th>Confidence Meter</th>
+                <th style="text-align: right;">Probability P</th>
+                <th style="text-align: right;">Surprisal (1 / P)</th>
+              </tr>
+            </thead>
+            <tbody>`;
+
+      rows.forEach((r, i) => {
+        sumLog += -Math.log(r.p || 1e-12);
+        const pct = Math.min(100, Math.max(2, r.p * 100));
+        tableHtml += `
+          <tr>
+            <td style="font-family: var(--font-mono); font-weight: 700; color: var(--text-muted);">${i + 1}</td>
+            <td><span class="tok-tag">${showToken(r.token)}</span></td>
+            <td class="prob-bar-cell">
+              <div class="mini-meter" title="${(r.p * 100).toFixed(2)}%">
+                <div class="mini-meter-fill" style="width: ${pct}%;"></div>
+              </div>
+            </td>
+            <td style="text-align: right; font-family: var(--font-mono); font-weight: 600;">${fmt(r.p)}</td>
+            <td style="text-align: right; font-family: var(--font-mono); font-weight: 600; color: var(--violet-glow);">${fmt(1 / (r.p || 1e-12))}</td>
+          </tr>`;
+      });
+
+      tableHtml += `</tbody></table></div>`;
+
+      const product = Math.exp(sumLog);
+      const pp = Math.exp(sumLog / N);
+      const shown = rows.slice(0, 8).map(r => fmt(1 / (r.p || 1e-12))).join(" × ") + (N > 8 ? " × …" : "");
+
+      // Metric Summary Cards
+      const avgP = rows.reduce((acc, r) => acc + r.p, 0) / N;
+
+      const metricsHtml = `
+        <div class="metric-hero-banner">
+          <div class="metric-pin">
+            <div class="metric-pin-top"><i data-lucide="zap" style="width:14px;height:14px;color:var(--cyan-glow)"></i> Perplexity (PPL)</div>
+            <div class="metric-value-huge">${fmt(pp)}</div>
+            <div class="metric-pin-hint">Lower score = model found text more natural</div>
+          </div>
+          <div class="metric-pin">
+            <div class="metric-pin-top"><i data-lucide="hash" style="width:14px;height:14px;color:var(--violet-glow)"></i> Token Count (N)</div>
+            <div class="metric-value-huge" style="color:var(--violet-glow);">${N}</div>
+            <div class="metric-pin-hint">Total evaluated sequence length</div>
+          </div>
+          <div class="metric-pin">
+            <div class="metric-pin-top"><i data-lucide="activity" style="width:14px;height:14px;color:var(--emerald-glow)"></i> Avg Token Probability</div>
+            <div class="metric-value-huge" style="color:var(--emerald-glow);">${(avgP * 100).toFixed(1)}%</div>
+            <div class="metric-pin-hint">Arithmetic average across all positions</div>
+          </div>
+        </div>`;
+
+      // Step-by-Step Calculation Breakdown
+      const formulaHtml = `
+        <div class="formula-breakdown-card">
+          <div class="card-title-group" style="margin-bottom: 12px;">
+            <i data-lucide="binary" style="width: 20px; height: 20px; color: var(--cyan-glow);"></i>
+            <h3 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700;">
+              Step-by-Step Mathematical Calculation
+            </h3>
+          </div>
+
+          <div class="steps-list">
+            <div class="step-item">
+              <span class="step-number-pill">Step 1</span>
+              <div class="step-content">
+                Multiply all inverse probability values (1/P):<br>
+                <code>${shown}</code> = <b>${fmt(product)}</b>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <span class="step-number-pill">Step 2</span>
+              <div class="step-content">
+                Count evaluated tokens: <b>N = ${N}</b>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <span class="step-number-pill">Step 3</span>
+              <div class="step-content">
+                Compute the N-th root of the product:
+                <code>(${fmt(product)})<sup>1/${N}</sup></code> = <span class="step-result-highlight">${fmt(pp)}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="insight-callout">
+            <i data-lucide="compass" style="width: 18px; height: 18px; flex-shrink: 0; color: var(--cyan-glow);"></i>
+            <span>
+              <strong>Intuitive Meaning:</strong> Perplexity ≈ <b>${fmt(pp)}</b> means the model was, on average, as uncertain as if choosing equally between <b>${fmt(pp)}</b> random possibilities for each word.
+            </span>
+          </div>
+        </div>`;
+
+      setTimeout(renderIcons, 20);
+      return ribbonHtml + metricsHtml + tableHtml + formulaHtml;
+    }
+
+    // Model Loader
+    async function loadModel() {
+      if (model) return;
+      const indicator = $("statusIndicator");
+      const progressWrap = $("progressBarWrap");
+      const progressFill = $("progressBarFill");
+
+      indicator.className = "status-indicator loading";
+      $("status").textContent = "Downloading DistilGPT-2 ONNX weights (cached after 1st load)…";
+      progressWrap.style.display = "block";
+
+      tokenizer = await AutoTokenizer.from_pretrained(MODEL_ID);
+      model = await AutoModelForCausalLM.from_pretrained(MODEL_ID, {
+        dtype: "q8",
+        progress_callback: (e) => {
+          if (e.status === "progress" && e.file && e.file.endsWith(".onnx")) {
+            const pct = Math.round(e.progress);
+            $("status").textContent = `Downloading ONNX model weights… ${pct}%`;
+            progressFill.style.width = `${pct}%`;
+          }
+        },
+      });
+
+      progressWrap.style.display = "none";
+    }
+
+    // Numerically stable log-softmax for one position
+    function logSoftmaxRow(data, offset, V) {
+      let max = -Infinity;
+      for (let j = 0; j < V; j++) {
+        if (data[offset + j] > max) max = data[offset + j];
+      }
+      let sum = 0;
+      for (let j = 0; j < V; j++) {
+        sum += Math.exp(data[offset + j] - max);
+      }
+      const logZ = max + Math.log(sum);
+      return (id) => data[offset + id] - logZ;
+    }
+
+    // Run Real Model Inference
+    async function run() {
+      const text = $("sentence").value;
+      if (!text.trim()) return;
+
+      const runBtn = $("runBtn");
+      const statusIndicator = $("statusIndicator");
+      runBtn.disabled = true;
+      statusIndicator.className = "status-indicator loading";
+
+      try {
+        await loadModel();
+        $("status").textContent = "DistilGPT-2 active. Calculating logits…";
+
+        const encoded = await tokenizer.encode(text);
+        const ids = [START_TOKEN_ID, ...encoded];
+        const n = ids.length;
+
+        const input_ids = new Tensor("int64", BigInt64Array.from(ids.map(BigInt)), [1, n]);
+        const attention_mask = new Tensor("int64", new BigInt64Array(n).fill(1n), [1, n]);
+
+        const { logits } = await model({ input_ids, attention_mask });
+        const V = logits.dims[2];
+        const data = logits.data;
+
+        // P(token i | tokens before it)
+        const rows = [];
+        for (let i = 1; i < n; i++) {
+          const logP = logSoftmaxRow(data, (i - 1) * V, V);
+          const decoded = await tokenizer.decode([ids[i]]);
+          rows.push({
+            token: decoded,
+            p: Math.exp(logP(ids[i]))
+          });
+        }
+
+        const note = `
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.875rem;color:var(--text-muted);margin-bottom:16px;">
+            <i data-lucide="check-circle-2" style="width:16px;height:16px;color:var(--emerald-glow)"></i>
+            <span>The initial token is evaluated from DistilGPT-2's start marker (<code>&lt;|endoftext|&gt;</code>), giving full probabilistic coverage.</span>
+          </div>`;
+
+        $("realOut").innerHTML = note + explain(rows);
+        $("realCard").style.display = "block";
+
+        // Top 8 Next Continuation Tokens
+        const lastLogP = logSoftmaxRow(data, (n - 1) * V, V);
+        const probs = [];
+        for (let j = 0; j < V; j++) {
+          probs.push([j, Math.exp(lastLogP(j))]);
+        }
+        probs.sort((a, b) => b[1] - a[1]);
+        const top = probs.slice(0, 8);
+        const maxP = top[0][1];
+
+        const topDecoded = [];
+        for (let k = 0; k < top.length; k++) {
+          const [id, p] = top[k];
+          const dec = await tokenizer.decode([id]);
+          topDecoded.push({ rank: k + 1, token: dec, p: p });
+        }
+
+        $("nextOut").innerHTML = topDecoded.map((item, k) => `
+          <div class="pred-row ${k === 0 ? "top-rank" : ""}">
+            <span class="pred-rank">#${item.rank}</span>
+            <span class="pred-token tok-tag">${showToken(item.token)}</span>
+            <div class="pred-bar-track">
+              <div class="pred-bar-fill" style="width: ${(item.p / maxP) * 100}%;"></div>
+            </div>
+            <span class="pred-percent">${(item.p * 100).toFixed(1)}%</span>
+          </div>
+        `).join("");
+
+        $("nextCard").style.display = "block";
+
+        statusIndicator.className = "status-indicator ready";
+        $("status").textContent = "Inference completed successfully ✓";
+
+        if (window.innerWidth < 768) {
+          $("realCard").scrollIntoView({ behavior: "smooth" });
+        }
+
+      } catch (err) {
+        statusIndicator.className = "status-indicator error";
+        const isFileProtocol = window.location.protocol === "file:";
+        let msg = err.message || String(err);
+        if (isFileProtocol && (msg.includes("fetch") || msg.includes("Failed") || msg.includes("NetworkError"))) {
+          msg += " (Notice: file:// protocol blocks WebAssembly/model downloads due to browser CORS policies. Please run 'python3 -m http.server 8000' or 'npx serve').";
+        }
+        $("status").innerHTML = `<span style="color:var(--rose-glow);font-weight:600;">Could not run model: ${msg}.</span> Section 4 simulator works anytime!`;
+        console.error(err);
+      }
+
+      runBtn.disabled = false;
+      renderIcons();
+    }
+
+    $("runBtn").onclick = run;
+
+    // Sample chips
+    document.querySelectorAll(".sample").forEach(chip => {
+      chip.onclick = () => {
+        const cleanText = chip.textContent.replace(/^[^\w\s]+/, "").trim();
+        $("sentence").value = cleanText;
+        run();
+      };
+    });
+
+    // ==========================================================================
+    // SECTION 4: INTERACTIVE MANUAL SIMULATOR
+    // ==========================================================================
+    function addRow(token = "", p = 0.5) {
+      const div = document.createElement("div");
+      div.className = "sim-row-item";
+      div.innerHTML = `
+        <input type="text" class="sim-token-input" value="${token}" placeholder="Token label">
+        <div class="sim-prob-wrap">
+          <input type="range" class="sim-slider" min="0.001" max="1" step="0.001" value="${p}">
+          <input type="number" class="sim-number-input" min="0.0001" max="1" step="0.01" value="${p}">
+        </div>
+        <button type="button" class="btn-remove-row" title="Delete token">
+          <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+          <span>Remove</span>
+        </button>
+      `;
+
+      const textInput = div.querySelector(".sim-token-input");
+      const slider = div.querySelector(".sim-slider");
+      const numberInput = div.querySelector(".sim-number-input");
+      const removeBtn = div.querySelector(".btn-remove-row");
+
+      slider.oninput = () => {
+        numberInput.value = slider.value;
+        updateSim();
+      };
+
+      numberInput.oninput = () => {
+        slider.value = numberInput.value;
+        updateSim();
+      };
+
+      textInput.oninput = updateSim;
+
+      removeBtn.onclick = () => {
+        div.remove();
+        updateSim();
+      };
+
+      $("simRows").appendChild(div);
+      renderIcons();
+    }
+
+    function updateSim() {
+      const rows = [...document.querySelectorAll("#simRows .sim-row-item")].map(d => {
+        const textInput = d.querySelector(".sim-token-input");
+        const numInput = d.querySelector(".sim-number-input");
+        return {
+          token: textInput.value || "?",
+          p: parseFloat(numInput.value)
+        };
+      });
+
+      if (rows.length === 0) {
+        $("simOut").innerHTML = `
+          <div class="explain-banner" style="border-left-color: var(--amber-glow);">
+            <i data-lucide="alert-circle" style="width: 18px; height: 18px; color: var(--amber-glow);"></i>
+            <span>No tokens left. Click <strong>"+ Add Token"</strong> or choose a preset above to calculate perplexity.</span>
+          </div>`;
+        renderIcons();
+        return;
+      }
+
+      if (rows.some(r => isNaN(r.p) || !(r.p > 0 && r.p <= 1))) {
+        $("simOut").innerHTML = `
+          <div class="explain-banner" style="border-left-color: var(--rose-glow); color: var(--rose-glow);">
+            <i data-lucide="alert-triangle" style="width: 18px; height: 18px; color: var(--rose-glow);"></i>
+            <span><strong>Validation Notice:</strong> Every probability value must be strictly greater than 0 and at most 1.0.</span>
+          </div>`;
+        renderIcons();
+        return;
+      }
+
+      $("simOut").innerHTML = explain(rows);
+      renderIcons();
+    }
+
+    function loadPreset(str) {
+      $("simRows").innerHTML = "";
+      str.split(",").forEach(pair => {
+        const [t, p] = pair.split(":");
+        addRow(t, parseFloat(p));
+      });
+      updateSim();
+    }
+
+    document.querySelectorAll(".preset").forEach(btn => {
+      btn.onclick = () => loadPreset(btn.dataset.p);
+    });
+
+    $("addRow").onclick = () => {
+      addRow("token", 0.5);
+      updateSim();
+    };
+
+    // Initial preset load
+    loadPreset("I:0.5,love:0.8,Python:0.2");
+  </script>
+</body>
+</html>
